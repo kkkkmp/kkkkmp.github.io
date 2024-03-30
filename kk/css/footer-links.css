@@ -1,0 +1,13 @@
+footer {
+  background-color: #f8f8f8;
+  padding: 20px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+}
+
+.footer-links a {
+  margin: 0 10px;
+}
