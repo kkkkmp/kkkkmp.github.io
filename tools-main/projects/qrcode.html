@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>二维码生成网站</title>
+    <!-- 引入Materialize框架的样式表 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- 引入animate.css库的样式表 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- 添加居中显示二维码的样式 -->
+    <style>
+        #qrcode-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #qrcode-container canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="center-align">二维码生成</h1>
+        <div class="row">
+            <div class="input-field col s12 m8 offset-m2">
+                <!-- 创建一个文本输入框，用于输入要生成二维码的文字 -->
+                <input id="text-input" type="text" placeholder="请输入要生成二维码的文字">
+                <label for="text-input">文字输入</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m8 offset-m2 center-align">
+                <!-- 创建一个按钮，用于触发二维码的生成 -->
+                <button id="generate-button" class="btn waves-effect waves-light">生成</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m8 offset-m2 center-align">
+                <!-- 创建一个容器，用于显示生成的二维码 -->
+                <div id="qrcode-container"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m8 offset-m2 center-align">
+                <!-- 创建一个隐藏的按钮，用于下载生成的二维码 -->
+                <button id="download-button" class="btn waves-effect waves-light" style="display: none;">下载</button>
+            </div>
+        </div>
+    </div>
+    <!-- 引入jQuery库 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 引入Materialize框架的JavaScript文件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- 引入qrcode.js库 -->
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+    <!-- 编写自定义的JavaScript代码 -->
+    <script>
+        // 定义一个变量，用于存储上次输入的文字
+        var lastText = "";
+        // 获取页面元素
+        var textInput = $("#text-input");
+        var generateButton = $("#generate-button");
+        var qrcodeContainer = $("#qrcode-container");
+        var downloadButton = $("#download-button");
+        // 为生成按钮添加点击事件监听器
+        generateButton.on("click", function() {
+            // 获取输入框中的文字
+            var text = textInput.val();
+            // 如果文字为空，弹出提示信息
+            if (text == "") {
+                M.toast({html: "请输入要生成二维码的文字"});
+                return;
+            }
+            // 如果文字与上次输入的相同，并且已经生成过二维码，不再重复生成
+            if (text == lastText && qrcodeContainer.children().length > 0) {
+                return;
+            }
+            // 更新上次输入的文字
+            lastText = text;
+            // 清空二维码容器中的内容
+            qrcodeContainer.empty();
+            // 隐藏下载按钮
+            downloadButton.hide();
+            // 创建一个新的二维码对象，传入要编码的文字和配置选项
+            var qrcode = new QRCode(qrcodeContainer[0], {
+                text: text,
+                width: 256,
+                height: 256,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            // 为二维码容器添加一个非线性动画效果
+            qrcodeContainer.addClass("animate__animated animate__bounceIn");
+            // 为下载按钮添加一个点击事件监听器
+            downloadButton.on("click", function() {
+                // 获取二维码的图片数据
+                var imageData = qrcodeContainer.children("img")[0].src;
+                // 创建一个临时的超链接元素，用于触发下载操作
+                var link = document.createElement("a");
+                link.href = imageData;
+                link.download = "qrcode.png";
+                link.click();
+            });
+            // 显示下载按钮
+            downloadButton.show();
+        });
+    </script>
+</body>
+</html>

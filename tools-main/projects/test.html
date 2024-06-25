@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>进制转换器</title>
+  <link rel="shortcut icon" href="images/site.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9707910477073817"
+     crossorigin="anonymous"></script>
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      opacity: 0;
+      animation: slide-in 0.5s ease-out forwards; /* 添加从上往下的渐入动画效果 */
+    }
+
+    .container {
+      max-width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-field input[type="text"],
+    .col.s6 > button {
+      animation: fade-in 0.5s ease-out; /* 添加渐入动画效果 */
+    }
+
+    /* 渐入动画的关键帧 */
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(-10px); /* 添加上下浮动效果 */
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 从上往下的渐入动画的关键帧 */
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 使用 flexbox 创建响应式的列布局 */
+    .row {
+      display: flex;
+      flex-wrap: wrap; /* 允许多行 */
+    }
+
+    .col.s6 {
+      flex-basis: 50%; /* 初始宽度为50% */
+    }
+
+    /* 响应式布局 - 屏幕宽度小于600px时，设置列为100%宽度 */
+    @media screen and (max-width: 600px) {
+      .col.s6 {
+        flex-basis: 100%;
+      }
+    }
+
+    /* 调整字体大小和按钮样式 */
+    h3 {
+      font-size: 24px; /* 默认字体大小为24px */
+    }
+
+    button {
+      width: 100%; /* 按钮宽度为100% */
+    }
+
+    /* 响应式布局 - 屏幕宽度大于600px时，增加字体大小和按钮边距 */
+    @media screen and (min-width: 600px) {
+      h3 {
+        font-size: 32px; /* 字体大小为32px */
+      }
+
+      button {
+        width: auto; /* 按钮宽度自适应 */
+        margin-left: 10px; /* 按钮左边距为10px */
+        margin-right: 10px; /* 按钮右边距为10px */
+      }
+    }
+    
+    /* 将输入数字一栏移到左部分 */
+    .row:first-child {
+      position: relative; /* 设置父元素为相对定位 */
+    }
+
+    .row:first-child > div {
+      position: absolute; /* 设置子元素为绝对定位 */
+      left: 0; /* 设置子元素的左边距为0 */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h3 class="center-align">进制转换器</h3>
+    <div class="row">
+      <div class="input-field col s6">
+        <input id="inputNumber" type="text" class="validate">
+        <label for="inputNumber">输入数字</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <select id="fromBase">
+          <option value="2">二进制</option>
+          <option value="8">八进制</option>
+          <option value="10" selected>十进制</option>
+          <option value="16">十六进制</option>
+        </select>
+        <label>转换前进制</label>
+      </div>
+      <div class="input-field col s6">
+        <select id="toBase">
+          <option value="2">二进制</option>
+          <option value="8">八进制</option>
+          <option value="10" selected>十进制</option>
+          <option value="16">十六进制</option>
+        </select>
+        <label>转换后进制</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <button class="btn waves-effect waves-light" onclick="convert()">转换</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6">
+        <input id="outputNumber" type="text" class="active" readonly>
+        <label for="outputNumber" class="active">转换结果</label>
+      </div>
+      <div class="col s6">
+        <button class="btn waves-effect waves-light" onclick="copyOutput()">复制</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('select');
+      var instances = M.FormSelect.init(elems);
+    });
+
+    function convert() {
+      var inputNumber = document.getElementById('inputNumber').value;
+      var fromBase = parseInt(document.getElementById('fromBase').value);
+      var toBase = parseInt(document.getElementById('toBase').value);
+
+      var decimalNumber = parseInt(inputNumber, fromBase);
+      var outputNumber = decimalNumber.toString(toBase);
+
+      document.getElementById('outputNumber').value = outputNumber;
+    }
+    
+    function copyOutput() {
+      var outputNumber = document.getElementById('outputNumber');
+      outputNumber.select();
+      document.execCommand("copy");
+      M.toast({html: '已复制到剪贴板'});
+    }
+  </script>
+</body>
+</html>

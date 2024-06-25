@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>日期计算器</title>
+</head>
+<body>
+<div class="container">
+  <h3 class="center-align">日期计算器</h3>
+
+  <!-- 输入日期表单 -->
+  <div class="row">
+    <div class="input-field col s6">
+      <input type="text" class="datepicker" id="startDate" placeholder="选择开始日期">
+      <label for="startDate">开始日期</label>
+    </div>
+    <div class="input-field col s6">
+      <input type="text" class="datepicker" id="endDate" placeholder="选择结束日期">
+      <label for="endDate">结束日期</label>
+    </div>
+  </div>
+
+  <!-- 计算日期差按钮 -->
+  <div class="row center-align">
+    <button class="btn waves-effect waves-light" onclick="calculateDateDifference()">计算日期差</button>
+  </div>
+
+  <!-- 显示日期差结果 -->
+  <div class="row center-align">
+    <p id="dateDifferenceResult"></p>
+  </div>
+
+  <!-- 推算日期表单 -->
+  <div class="row">
+    <div class="input-field col s6">
+      <input type="number" id="daysToAdd" placeholder="输入天数">
+      <label for="daysToAdd">天数</label>
+    </div>
+    <div class="input-field col s6">
+      <input type="text" class="datepicker" id="startDateToAdd" placeholder="选择开始日期">
+      <label for="startDateToAdd">开始日期</label>
+    </div>
+  </div>
+
+  <!-- 推算日期按钮 -->
+  <div class="row center-align">
+    <button class="btn waves-effect waves-light" onclick="calculateFutureDate()">推算日期</button>
+  </div>
+
+  <!-- 显示推算日期结果 -->
+  <div class="row center-align">
+    <p id="futureDateResult"></p>
+  </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // 初始化日期选择器
+    var datepickerOptions = { format: 'yyyy-mm-dd' };
+    var datepickerElems = document.querySelectorAll('.datepicker');
+    M.Datepicker.init(datepickerElems, datepickerOptions);
+  });
+
+  // 计算日期差
+  function calculateDateDifference() {
+    var startDate = new Date(document.getElementById('startDate').value);
+    var endDate = new Date(document.getElementById('endDate').value);
+
+    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+      var differenceInDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+      document.getElementById('dateDifferenceResult').innerText = '日期差：' + differenceInDays + ' 天';
+    } else {
+      document.getElementById('dateDifferenceResult').innerText = '请输入有效的日期';
+    }
+  }
+
+  // 推算日期
+  function calculateFutureDate() {
+    var daysToAdd = parseInt(document.getElementById('daysToAdd').value);
+    var startDateToAdd = new Date(document.getElementById('startDateToAdd').value);
+
+    if (!isNaN(daysToAdd) && !isNaN(startDateToAdd.getTime())) {
+      var futureDate = new Date(startDateToAdd.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+      document.getElementById('futureDateResult').innerText = '推算日期：' + futureDate.toLocaleDateString('zh-CN');
+    } else {
+      document.getElementById('futureDateResult').innerText = '请输入有效的天数和日期';
+    }
+  }
+</script>
+
+</body>
+</html>
